@@ -6,7 +6,7 @@
 /*   By: mfroehly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/30 16:13:16 by mfroehly          #+#    #+#             */
-/*   Updated: 2015/12/04 06:40:19 by mfroehly         ###   ########.fr       */
+/*   Updated: 2015/12/09 02:41:36 by mfroehly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,17 +58,16 @@ static int		ex_line(t_file *file, char **retour)
 
 	i = 0;
 	ft_bzero(temp, BUFF_SIZE + 1);
-	while (1)
+	while (file->length > 0)
 	{
-		if (file->cursor == file->length || file->length <= 0)
+		if (file->cursor == file->length)
 		{
 			file->length = read(file->fd, file->buffer, BUFF_SIZE);
-			if (file->length <= 0)
-				return (file->length);
-			if (ft_strcon(retour, temp) == -1)
-				return (-1);
+			ft_strcon(retour, temp);
 			file->cursor = 0;
 			i = 0;
+			if (file->length == 0)
+				return (0);
 		}
 		if (file->buffer[file->cursor] == '\n')
 		{
@@ -77,9 +76,10 @@ static int		ex_line(t_file *file, char **retour)
 		}
 		temp[i++] = file->buffer[file->cursor++];
 	}
+	return (file->length);
 }
 
-int				free_temp(t_file *file)
+static int		free_temp(t_file *file)
 {
 	free(file);
 	return (-1);
@@ -105,9 +105,10 @@ int				get_next_line(int const fd, char **line)
 		if (temp->length == -1)
 			return (free_temp(temp));
 		temp->cursor = 0;
+		temp->temoin = 1;
 		temp->next = (file) ? file : 0;
 		file = temp;
 	}
 	rt = ex_line(temp, line);
-	return ((*line) ? 1 : rt);
+	return (rt);
 }
