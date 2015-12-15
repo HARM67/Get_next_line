@@ -51,6 +51,33 @@ static t_file	*p_from_fd(int fd, t_file *file)
 	return (0);
 }
 
+static int		remove_fd(int fd, t_file **file)
+{
+	t_file *tmp;
+	t_file *tmp2;
+
+	if ((*file)->fd == fd)
+	{
+		tmp = (*file)->next;
+		free(*file);
+		*file = tmp;
+		return (-1);
+	}
+	tmp = *file;
+	while (tmp->next)
+	{
+		tmp2 = tmp->next;
+		if (tmp2->fd == fd)
+		{
+			tmp->next = tmp2 ->next;
+			free(tmp2);
+			return (0);
+		}
+		tmp = tmp2;
+	}
+	return (-2);
+}
+
 static int		ex_line(t_file *file, char **retour)
 {
 	char	temp[BUFF_SIZE + 1];
@@ -79,12 +106,6 @@ static int		ex_line(t_file *file, char **retour)
 	return (file->length);
 }
 
-static int		free_temp(t_file *file)
-{
-	free(file);
-	return (-1);
-}
-
 int				get_next_line(int const fd, char **line)
 {
 	static t_file	*file = 0;
@@ -103,12 +124,13 @@ int				get_next_line(int const fd, char **line)
 		temp->fd = fd;
 		temp->length = read(temp->fd, temp->buffer, BUFF_SIZE);
 		if (temp->length == -1)
-			return (free_temp(temp));
-		temp->cursor = 0;
+			return (remove_fd(fd, &temp));
 		temp->temoin = 1;
 		temp->next = (file) ? file : 0;
 		file = temp;
 	}
 	rt = ex_line(temp, line);
+	if (rt == 0)
+		remove_fd(fd, &file);
 	return (rt);
 }
