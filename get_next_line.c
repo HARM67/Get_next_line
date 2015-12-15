@@ -53,8 +53,8 @@ static t_file	*p_from_fd(int fd, t_file *file)
 
 static int		remove_fd(int fd, t_file **file)
 {
-	t_file *tmp;
-	t_file *tmp2;
+	t_file	*tmp;
+	t_file	*tmp2;
 
 	if ((*file)->fd == fd)
 	{
