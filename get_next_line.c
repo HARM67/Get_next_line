@@ -6,7 +6,7 @@
 /*   By: mfroehly <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/11/30 16:13:16 by mfroehly          #+#    #+#             */
-/*   Updated: 2015/12/09 02:41:36 by mfroehly         ###   ########.fr       */
+/*   Updated: 2015/12/16 01:55:40 by mfroehly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static int		remove_fd(int fd, t_file **file)
 		tmp2 = tmp->next;
 		if (tmp2->fd == fd)
 		{
-			tmp->next = tmp2 ->next;
+			tmp->next = tmp2->next;
 			free(tmp2);
 			return (0);
 		}
